@@ -6,8 +6,9 @@
 #include <stdio.h>
 #include <limits.h>
 #include <math.h>
-#include<string.h>
-#include<stdlib.h>
+#include <string.h>
+#include <stdlib.h>
+#include "process.h"
 
 #define CHUNK 1024 /* read 1024 bytes at a time */
 
@@ -42,9 +43,22 @@ int main (int argc, char* argv[])
 	
 	int numProcesses = atoi(lines[0]);
 	printf("I hope this works: %d\n", numProcesses);
-
+	
+	struct process processes[numProcesses];
+	
 	// run a parse that will unfuck the data
+	for(i=1; i<(numProcesses + 1); i++)
+	{
+		char *temp = strtok(lines[i], ",");
+		processes[i-1].arrival = atoi(temp);
+		temp = strtok(NULL, ",");
+		processes[i-1].burst = atoi(temp);
 
+		printf("arrival %d\n", processes[i-1].arrival);
+		printf("burst %d\n", processes[i-1].burst);
+	}
+
+	
 	// grab the round robin quantun
 
 	// grab the MLFQ S value
@@ -53,3 +67,4 @@ int main (int argc, char* argv[])
 
     return 0;
 }
+
