@@ -14,6 +14,10 @@
 
 enum { MAXL = 40, MAXC = 50 };
 
+void fifo(struct process processes[], int length);
+
+void prettyPrint(struct process processes[], int length);
+
 int main (int argc, char* argv[])
 {
 
@@ -53,18 +57,54 @@ int main (int argc, char* argv[])
 		processes[i-1].arrival = atoi(temp);
 		temp = strtok(NULL, ",");
 		processes[i-1].burst = atoi(temp);
-
-		printf("arrival %d\n", processes[i-1].arrival);
-		printf("burst %d\n", processes[i-1].burst);
 	}
 
 	
 	// grab the round robin quantun
-
+	int quantum = atoi(lines[n-2]);
+	printf("Quantum time: %d\n", quantum);
 	// grab the MLFQ S value
+	int MLFQS = atoi(lines[n-1]);
+	printf("MLFQ S: %d\n", MLFQS);
 
     free (lines);   /* free allocated memory */
 
+	fifo(processes, numProcesses);
+
     return 0;
 }
+
+void fifo(struct process processes[], int length)
+{
+	int i;
+	int currTime = 0;
+	for(i=0; i<length; i++)
+	{
+		//run the proccess
+		currTime += processes[i].burst;
+		// update it's finish time
+		processes[i].finishTime = currTime;
+		// calculate it's turnAround time
+		processes[i].turnAroundTime = processes[i].finishTime - processes[i].arrival;
+		// calculate it's normalized turnaround time
+		processes[i].normalizedTurnAround = processes[i].turnAroundTime / processes[i].burst;
+	}
+	prettyPrint(processes, length);
+}
+
+// This will prettify the printing process
+void prettyPrint(struct process processes[], int length)
+{
+	int i;
+	for(i=0; i<length; i++)
+	{
+		printf("Process %d Arrival: %d\n", i, processes[i].arrival);
+		printf("Process %d Burst: %d\n", i, processes[i].burst);
+		printf("Process %d Finish: %d\n", i,  processes[i].finishTime);
+		printf("Process %d TurnAround: %d\n", i,  processes[i].turnAroundTime);
+		printf("Process %d Normalized TurnAround: %.2f\n", i,  processes[i].normalizedTurnAround);
+		printf("\n");
+	}
+}
+
 

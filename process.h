@@ -4,6 +4,6 @@ typedef struct process {
 	int burst;
 	int finishTime;
 	int turnAroundTime;
-	int normalizedTurnAround;
+	float normalizedTurnAround;
 	
 }Process;
