@@ -5,5 +5,7 @@ typedef struct process {
 	int finishTime;
 	int turnAroundTime;
 	float normalizedTurnAround;
+	int timeRemaining;
+	int finished;
 	
 }Process;

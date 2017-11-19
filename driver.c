@@ -16,6 +16,10 @@ enum { MAXL = 40, MAXC = 50 };
 
 void fifo(struct process processes[], int length);
 
+void sjf(struct process processes[], int length);
+
+void roundRobin(struct process processes[], int length, int quantum);
+
 void prettyPrint(struct process processes[], int length);
 
 int main (int argc, char* argv[])
@@ -57,6 +61,8 @@ int main (int argc, char* argv[])
 		processes[i-1].arrival = atoi(temp);
 		temp = strtok(NULL, ",");
 		processes[i-1].burst = atoi(temp);
+		processes[i-1].timeRemaining = atoi(temp);
+		processes[i-1].finished = 0;
 	}
 
 	
@@ -69,7 +75,15 @@ int main (int argc, char* argv[])
 
     free (lines);   /* free allocated memory */
 
+	printf("FIFO\n");
 	fifo(processes, numProcesses);
+	
+	printf("SJF\n");
+	sjf(processes, numProcesses);
+
+	printf("Round Robin\n");
+	roundRobin(processes, numProcesses, quantum);
+	
 
     return 0;
 }
@@ -88,6 +102,58 @@ void fifo(struct process processes[], int length)
 		processes[i].turnAroundTime = processes[i].finishTime - processes[i].arrival;
 		// calculate it's normalized turnaround time
 		processes[i].normalizedTurnAround = processes[i].turnAroundTime / processes[i].burst;
+	}
+	prettyPrint(processes, length);
+}
+
+void sjf(struct process processes[], int length)
+{
+	printf("Code goes here\n");	
+}
+
+void roundRobin(struct process processes[], int length, int quantum)
+{
+	int i;
+	int currTime = 0;
+	int totalFinished = 0;
+	for(i=0; i<length; i++)
+	{
+		int remTime = processes[i].timeRemaining;
+		if(processes[i].finished == 0)
+		{
+			if(remTime > quantum)
+			{
+				// keep er movin
+				currTime += quantum;
+				processes[i].timeRemaining -= quantum;
+			}else
+			{
+					// ope she done
+					currTime += processes[i].timeRemaining;
+					processes[i].timeRemaining = 0;
+					// update it's finish time
+					processes[i].finishTime = currTime;
+					// calculate it's turnAround time
+					processes[i].turnAroundTime = processes[i].finishTime - processes[i].arrival;
+					// calculate it's normalized turnaround time
+					processes[i].normalizedTurnAround = processes[i].turnAroundTime / processes[i].burst;
+					processes[i].finished = 1;
+					totalFinished++;
+			}
+		}
+		
+		/*
+			if we havent finished all processes and are on the last iteration, then
+			flip i back to zero and do it again. Repeat until over.
+		*/
+		if(totalFinished < length)
+		{
+			if(i == length-1)
+			{
+				i=-1;
+			}
+		}
+		
 	}
 	prettyPrint(processes, length);
 }
