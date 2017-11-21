@@ -85,19 +85,19 @@ int main (int argc, char* argv[])
     free (lines);   /* free allocated memory */
 
 	printf("FIFO\n");
-	//fifo(processes, numProcesses);
-	//createCSV("fifo.csv", processes, numProcesses);
-	//resetProcessObject(processes, numProcesses);
+	fifo(processes, numProcesses);
+	createCSV("fifo.csv", processes, numProcesses);
+	resetProcessObject(processes, numProcesses);
 	
 	printf("SJF\n");
 	sjf(processes, numProcesses);
-	//createCSV("sjf.csv", processes, numProcesses);
-	//resetProcessObject(processes, numProcesses);
+	createCSV("sjf.csv", processes, numProcesses);
+	resetProcessObject(processes, numProcesses);
 
 	printf("Round Robin\n");
-	//roundRobin(processes, numProcesses, quantum);
-	//createCSV("roundRobin.csv", processes, numProcesses);
-	//resetProcessObject(processes, numProcesses);
+	roundRobin(processes, numProcesses, quantum);
+	createCSV("roundRobin.csv", processes, numProcesses);
+	resetProcessObject(processes, numProcesses);
 	
 
     return 0;
@@ -270,7 +270,7 @@ void createCSV(char *name, struct process processes[], int length)
 void resetProcessObject(struct process processes[], int length)
 {
 	int i;
-	for(i=0; i<length -1; i++)
+	for(i=0; i<length; i++)
 	{
 		processes[i].finishTime = 0;
 		processes[i].turnAroundTime = 0;
