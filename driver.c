@@ -1,6 +1,7 @@
 // Matthew Likwarz
 // Project 3
 // CS 421
+// figuring out how to read in a file and all that good jazz was brought to you be the guy/girl from the link below
 // https://stackoverflow.com/questions/36801833/storing-each-line-of-a-text-file-into-an-array
 
 #include <stdio.h>
@@ -84,9 +85,9 @@ int main (int argc, char* argv[])
     free (lines);   /* free allocated memory */
 
 	printf("FIFO\n");
-	fifo(processes, numProcesses);
-	createCSV("fifo.csv", processes, numProcesses);
-	resetProcessObject(processes, numProcesses);
+	//fifo(processes, numProcesses);
+	//createCSV("fifo.csv", processes, numProcesses);
+	//resetProcessObject(processes, numProcesses);
 	
 	printf("SJF\n");
 	sjf(processes, numProcesses);
@@ -94,9 +95,9 @@ int main (int argc, char* argv[])
 	//resetProcessObject(processes, numProcesses);
 
 	printf("Round Robin\n");
-	roundRobin(processes, numProcesses, quantum);
-	createCSV("roundRobin.csv", processes, numProcesses);
-	resetProcessObject(processes, numProcesses);
+	//roundRobin(processes, numProcesses, quantum);
+	//createCSV("roundRobin.csv", processes, numProcesses);
+	//resetProcessObject(processes, numProcesses);
 	
 
     return 0;
@@ -121,9 +122,48 @@ void fifo(struct process processes[], int length)
 	prettyPrint(processes, length);
 }
 
+// This method will simulate shortest job first scheduling
 void sjf(struct process processes[], int length)
 {
-	printf("Code goes here\n");	
+	int totalFinished = 0;
+	int currTime = 0;
+	while(totalFinished != length)
+	{
+		// increment currTime by 1
+		currTime++;
+		
+		// check for the index of the lowest remainingTime where arrival <= currTime + !finished
+		int i;
+		int tempIndex = 0;
+		int minVal = INT_MAX;
+		for(i=0; i<length; i++)
+		{
+			if(processes[i].finished == 0 && processes[i].arrival <= currTime)
+			{
+				if(processes[i].timeRemaining < minVal)
+				{
+					minVal = processes[i].timeRemaining;
+					tempIndex = i;
+				}
+			}
+		}
+		// subtract 1 from remaining time of shortest one
+		processes[tempIndex].timeRemaining--;
+
+		// if remainingTime == 0 then do finish up process increment total, mark finished
+
+		if(processes[tempIndex].timeRemaining == 0)
+		{
+			processes[tempIndex].finishTime = currTime;
+			// calculate it's turnAround time
+			processes[tempIndex].turnAroundTime = processes[tempIndex].finishTime - processes[tempIndex].arrival;
+			// calculate it's normalized turnaround time
+			processes[tempIndex].normalizedTurnAround = processes[tempIndex].turnAroundTime / processes[tempIndex].burst;
+			processes[tempIndex].finished = 1;
+			totalFinished++;
+		}
+	}	
+	prettyPrint(processes, length);
 }
 
 // This method will simulate a round robin scheduler
@@ -234,7 +274,7 @@ void resetProcessObject(struct process processes[], int length)
 	{
 		processes[i].finishTime = 0;
 		processes[i].turnAroundTime = 0;
-		processes[i].normalizedTurnAround = 0.0;
+		processes[i].normalizedTurnAround = 0;
 		processes[i].timeRemaining = processes[i].burst;
 		processes[i].finished = 0;
 	}
