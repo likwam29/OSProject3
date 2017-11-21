@@ -22,6 +22,10 @@ void roundRobin(struct process processes[], int length, int quantum);
 
 void prettyPrint(struct process processes[], int length);
 
+void createCSV(char *name, struct process processes[], int length);
+
+void resetProcessObject(struct process processes[], int length);
+
 int main (int argc, char* argv[])
 {
 
@@ -44,7 +48,11 @@ int main (int argc, char* argv[])
         for (; *p && *p != '\n'; p++) {}     /* find 1st '\n'  */
         *p = 0, n++;                         /* nul-termiante  */
     }
-    if (fp != stdin) fclose (fp);   /* close file if not stdin */
+    if (fp != stdin)
+	{
+		fclose (fp);   /* close file if not stdin */
+		printf("first file closed\n");
+	}
 
     /* print lines */
     for (i = 0; i < n; i++) printf (" line[%2d] : '%s'\n", i + 1, lines[i]);
@@ -77,17 +85,24 @@ int main (int argc, char* argv[])
 
 	printf("FIFO\n");
 	fifo(processes, numProcesses);
+	createCSV("fifo.csv", processes, numProcesses);
+	resetProcessObject(processes, numProcesses);
 	
 	printf("SJF\n");
 	sjf(processes, numProcesses);
+	//createCSV("sjf.csv", processes, numProcesses);
+	//resetProcessObject(processes, numProcesses);
 
 	printf("Round Robin\n");
 	roundRobin(processes, numProcesses, quantum);
+	createCSV("roundRobin.csv", processes, numProcesses);
+	resetProcessObject(processes, numProcesses);
 	
 
     return 0;
 }
 
+// This method will simulate a fifo scheduler
 void fifo(struct process processes[], int length)
 {
 	int i;
@@ -111,6 +126,7 @@ void sjf(struct process processes[], int length)
 	printf("Code goes here\n");	
 }
 
+// This method will simulate a round robin scheduler
 void roundRobin(struct process processes[], int length, int quantum)
 {
 	int i;
@@ -123,7 +139,7 @@ void roundRobin(struct process processes[], int length, int quantum)
 		{
 			if(remTime > quantum)
 			{
-				// keep er movin
+				// keep'er movin
 				currTime += quantum;
 				processes[i].timeRemaining -= quantum;
 			}else
@@ -150,6 +166,7 @@ void roundRobin(struct process processes[], int length, int quantum)
 		{
 			if(i == length-1)
 			{
+				// assign to -1 because after this line the for loop will increment
 				i=-1;
 			}
 		}
@@ -170,6 +187,56 @@ void prettyPrint(struct process processes[], int length)
 		printf("Process %d TurnAround: %d\n", i,  processes[i].turnAroundTime);
 		printf("Process %d Normalized TurnAround: %.2f\n", i,  processes[i].normalizedTurnAround);
 		printf("\n");
+	}
+}
+
+// this will create a .csv file for the specific scheduling algorithm
+void createCSV(char *name, struct process processes[], int length)
+{
+	// create a file
+	FILE *fp;
+
+	// open a write stream
+	fp=fopen(name,"w+");
+
+	// Write into csv
+	
+	// print out column header to file
+
+	fprintf(fp, "Process number,finish time, turnaround time,normalized turnaround time");
+
+	int i;
+	for(i=0; i<length -1; i++)
+	{
+		fprintf(fp, "\nProcess %i,", i);
+		fprintf(fp, "%i,", processes[i].finishTime);
+		fprintf(fp, "%i,", processes[i].turnAroundTime);
+		fprintf(fp, "%.2f", processes[i].normalizedTurnAround);
+	}
+	// this will print the last process without a comma after it.
+	fprintf(fp, "\nProcess %i,", length-1);
+	fprintf(fp, "%i,", processes[length-1].finishTime);
+	fprintf(fp, "%i,", processes[length-1].turnAroundTime);
+	fprintf(fp, "%.2f", processes[length-1].normalizedTurnAround);
+	
+	// close the file
+	fclose(fp);
+}
+
+/* 
+	This will reset the processes object to the same
+	state it was in when it was first created
+*/ 
+void resetProcessObject(struct process processes[], int length)
+{
+	int i;
+	for(i=0; i<length -1; i++)
+	{
+		processes[i].finishTime = 0;
+		processes[i].turnAroundTime = 0;
+		processes[i].normalizedTurnAround = 0.0;
+		processes[i].timeRemaining = processes[i].burst;
+		processes[i].finished = 0;
 	}
 }
 
