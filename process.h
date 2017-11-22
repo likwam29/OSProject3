@@ -7,5 +7,6 @@ typedef struct process {
 	float normalizedTurnAround;
 	int timeRemaining;
 	int finished;
+	int latency;
 	
 }Process;
