@@ -21,6 +21,8 @@ void sjf(struct process processes[], int length);
 
 void roundRobin(struct process processes[], int length, int quantum);
 
+void mlfq(struct process processes[], int length, int s);
+
 void prettyPrint(struct process processes[], int length);
 
 void createCSV(char *name, struct process processes[], int length);
@@ -98,7 +100,10 @@ int main (int argc, char* argv[])
 	roundRobin(processes, numProcesses, quantum);
 	createCSV("roundRobin.csv", processes, numProcesses);
 	resetProcessObject(processes, numProcesses);
-	
+
+	printf("MLFQ\n");
+	mlfq(processes, numProcesses, MLFQS);
+	//createCSV("mlfq.csv", processes, numProcesses);
 
     return 0;
 }
@@ -213,6 +218,43 @@ void roundRobin(struct process processes[], int length, int quantum)
 		
 	}
 	prettyPrint(processes, length);
+}
+
+void mlfq(struct process processes[], int length, int s)
+{
+	printf("Code goes here\n");
+	int totalFinished = 0;
+	int currTime = 0;
+	while(totalFinished != length)
+	{
+		int sHit = 0;
+		int sElapsed = 0;
+		// highest priority queue
+		for(i=0; i<length; i++)
+		{
+			if(sElapsed == s)
+			{
+				sHit = 1;
+				break;
+			}
+			if(processes[i].finished == 0 && processes[i].arrival <= currTime)
+			{
+				currTime++;
+				processes[i].timeRemaining--;
+				sElasped++;
+			}
+			if(processes[i].timeRemaining == 0)
+			{
+				processes[i].finishTime = currTime;
+				// calculate it's turnAround time
+				processes[i].turnAroundTime = processes[i].finishTime - processes[i].arrival;
+				// calculate it's normalized turnaround time
+				processes[i].normalizedTurnAround = processes[i].turnAroundTime / processes[i].burst;
+				processes[tempIndex].finished = 1;
+				totalFinished++;
+			}
+		}
+	}
 }
 
 // This will prettify the printing process
