@@ -1,0 +1,37 @@
+Process number,finish time, turnaround time,normalized turnaround time
+Process 0,10,9,0.90
+Process 1,13,8,2.67
+Process 2,16,9,3.00
+Process 3,35,27,1.42
+Process 4,45,35,3.50
+Process 5,53,41,5.12
+Process 6,67,48,3.43
+Process 7,84,64,3.76
+Process 8,96,76,6.33
+Process 9,99,74,24.67
+Process 10,109,79,7.90
+Process 11,123,93,6.64
+Process 12,125,93,46.50
+Process 13,145,113,5.65
+Process 14,150,116,23.20
+Process 15,168,130,7.22
+Process 16,187,148,7.79
+Process 17,192,148,29.60
+Process 18,208,164,10.25
+Process 19,219,168,15.27
+Process 20,233,182,13.00
+Process 21,240,188,26.86
+Process 22,252,198,16.50
+Process 23,253,197,197.00
+Process 24,270,212,12.47
+Process 25,284,219,15.64
+Process 26,287,222,74.00
+Process 27,298,209,19.00
+Process 28,315,224,13.18
+Process 29,317,223,111.50
+
+Average Latency:, 113.33
+
+Average Turnaround:, 123.90
+
+Average Normalized Turnaround:, 23.80

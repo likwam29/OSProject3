@@ -11,8 +11,6 @@
 #include <stdlib.h>
 #include "process.h"
 
-#define CHUNK 1024 /* read 1024 bytes at a time */
-
 enum { MAXL = 40, MAXC = 50 };
 
 void fifo(struct process processes[], int length);
@@ -225,6 +223,7 @@ void roundRobin(struct process processes[], int length, int quantum)
 	prettyPrint(processes, length);
 }
 
+// This method will simulate a mlfq
 void mlfq(struct process processes[], int length, int s)
 {
 	printf("Code goes here");
